@@ -9,7 +9,7 @@ model = tf.keras.models.load_model('./pocus/static/cnn/220821-1-epo12.h5')
 mp_pose = mp.solutions.pose
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
-CLASSES = ["correct", "turtle", "shoulder-left","shoulder-right","head-left", "head-right", "chin-left", "chin-right"]
+CLASSES = ["correct", "turtle", "shoulder-left", "shoulder-right", "head-left", "head-right", "chin-left", "chin-right"]
 
 
 @bp.route('/', methods=['GET'])
@@ -27,7 +27,8 @@ def predict():
         return 'nothing to predict'
 
     # image preprocessing : numpy 배열로 바꾸는거까지
-    with mp_pose.Pose(static_image_mode=True, model_complexity=2, enable_segmentation=True, min_detection_confidence=0.5) as pose:
+    with mp_pose.Pose(static_image_mode=True, model_complexity=2, enable_segmentation=True,
+                      min_detection_confidence=0.5) as pose:
         # gray scale
         img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
@@ -49,13 +50,14 @@ def predict():
         annotated_image = np.where(condition, annotated_image, bg_image)
 
         # draw
-        mp_drawing.draw_landmarks(annotated_image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS, landmark_drawing_spec=mp_drawing_styles.get_default_pose_landmarks_style(), )  # (1920, 1920, 3)
+        mp_drawing.draw_landmarks(annotated_image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS,
+                                  landmark_drawing_spec=mp_drawing_styles.get_default_pose_landmarks_style(), )  # (1920, 1920, 3)
 
-        annotated_image = cv2.resize(annotated_image, (192, 192)) # (192, 192, 3)
+        annotated_image = cv2.resize(annotated_image, (192, 192))  # (192, 192, 3)
         # target = annotated_image.astype(np.float32) / 255. # (192, 192, 3)
         annotated_image = np.expand_dims(annotated_image, axis=0)
 
-    prediction = model.predict(annotated_image) # <class 'numpy.ndarray'>
+    prediction = model.predict(annotated_image)  # <class 'numpy.ndarray'>
     label = CLASSES[prediction.argmax()]
 
     # 방법1) 라벨을 숫자로 리턴 -> node에서 변환
