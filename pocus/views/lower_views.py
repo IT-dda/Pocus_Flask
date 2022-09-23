@@ -5,7 +5,6 @@ import json
 
 bp = Blueprint('lower', __name__, url_prefix='/lower')
 model = joblib.load('C:/Users/DS/Documents/Pocus/Pocus_Flask/pocus/static/models/sensor.pkl')
-CLASSES = ['correct', 'left', 'right', 'twist', 'wrong']
 
 
 @bp.route('/')
@@ -24,6 +23,6 @@ def predict():
         sensor_value = np.array(list(map(int, nums.split(','))))
         sensor_value = sensor_value.reshape((1, -1))
         prediction = model.predict(sensor_value)
-        return json.dumps({'prediction': CLASSES[prediction[0]], 'params': nums})
+        return json.dumps({'prediction': int(prediction[0]), 'params': nums})
     else:  # GET
         return '성공!!!!!!!!!!!'
