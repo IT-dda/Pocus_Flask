@@ -12,20 +12,35 @@ import json
 
 bp = Blueprint('conn', __name__, url_prefix='/conn')
 
+def stringToRGB(base64_string):
+    imgdata = base64.b64decode(base64_string)
+    dataBytesIO = io.BytesIO(imgdata)
+    image = Image.open(dataBytesIO)
+    return cv2.cvtColor(np.array(image), cv2.COLOR_BGR2RGB)
+
 
 @bp.route('/image', methods=['GET', 'POST'])
 def image_test():
-    if request.method == 'POST':
+    if request.method == 'GET':
+        # res = request.get_json()
+        # img = res['url']
+        # return f'{img}'
+        print('GET 요청성공얼마널넝라ㅓㄴ이럼;럼;ㅏ러')
+        return json.dumps({'message': 'test image get done'})
+    else: # POST
         res = request.get_json()
-        img = res['url']
-        return f'{img}'
-    else: # GET
+        url = res['values'][22:]
+        # print('+++++++++++++++++++++++++++++++++++++++++++++START+++++++++++++++++++++++++++++++++++')
+        # print(url)
+        # print('--------------------------------------END-----------------------------------------')
+
         ## base 64 사용
         # url.encode('utf-8')
-        # img = base64.b64decode(url)
-        # img = BytesIO(img)
-        # img = Image.open(img)
-        # img.save('test.jpg')
+        img = base64.b64decode(url)
+        img = BytesIO(img)
+        img = Image.open(img)
+        img = img.convert("RGB")
+        img.save('test.jpg')
         # #
         # # # plt.imshow(img)
         # # # img = cv2.cvtColor(np.array(img), cv2.COLOR_BGR2RGB)
@@ -45,6 +60,6 @@ def image_test():
         # plt.imshow(img)
         # return img
 
-        print('요청성공얼마널넝라ㅓㄴ이럼;럼;ㅏ러')
-        # return 'test image get'
-        return json.dumps({'message': 'test image get done'})
+        # print('POST 요청성공얼마널넝라ㅓㄴ이럼;럼;ㅏ러')
+        return json.dumps({'message': 'test image post done'})
+
