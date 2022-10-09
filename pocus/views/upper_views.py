@@ -11,7 +11,7 @@ from ..database import Database
 
 bp = Blueprint('upper', __name__, url_prefix='/upper')
 
-model = tf.keras.models.load_model('./pocus/static/cnn/4-holistic-ldmk-1-binary-sigmoid-epo20.h5')
+model = tf.keras.models.load_model('./pocus/static/models/4-holistic-ldmk-1-binary-sigmoid-epo20.h5')
 
 mp_holistic = mp.solutions.holistic
 mp_drawing = mp.solutions.drawing_utils
@@ -97,7 +97,7 @@ def predict():
 
         print(prediction)
 
-        # return json.dumps({'message': label})
-        return json.dumps({'message': CLASSES[label]})
+        return json.dumps({'message': int(label), 'pose': CLASSES[label]})
+        # return json.dumps({'message': CLASSES[label]})
     else:  # GET
         return f'upper predict test'
