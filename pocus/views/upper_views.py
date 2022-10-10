@@ -60,6 +60,9 @@ def preprocess(img):
         mp_drawing.draw_landmarks(annotated_image, results.pose_landmarks, mp_holistic.POSE_CONNECTIONS,
                                   landmark_drawing_spec=mp_drawing_styles.get_default_pose_landmarks_style(), )  # (1920, 1920, 3)
 
+    annotated_image = cv2.cvtColor(annotated_image, cv2.COLOR_BGR2RGB)
+    # cv2.imwrite(f'C:/Users/jyj24/Desktop/upper.jpg', annotated_image)
+
     # annotated_image = cv2.resize(annotated_image, (192, 192))  # (192, 192, 3)
     annotated_image = cv2.resize(img, (192, 192))  # (192, 192, 3)
     annotated_image = np.expand_dims(annotated_image, axis=0)
