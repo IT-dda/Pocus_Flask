@@ -4,7 +4,7 @@ import numpy as np
 import json
 
 bp = Blueprint('lower', __name__, url_prefix='/lower')
-model = joblib.load('C:/Users/DS/Documents/Pocus/Pocus_Flask/pocus/static/models/sensor.pkl')
+model = joblib.load('./pocus/static/models/sensor.pkl')
 
 
 @bp.route('/')
