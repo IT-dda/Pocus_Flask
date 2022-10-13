@@ -8,6 +8,7 @@ from io import BytesIO
 from PIL import Image
 import json
 from ..database import Database
+from ..save_noti import table_log
 
 bp = Blueprint('upper', __name__, url_prefix='/upper')
 
@@ -79,7 +80,9 @@ def upper_get():
 def predict():
     if request.method == 'POST':
         req = request.get_json()
-        url = req['values'][22:]  # "data:image/png;base64," 제거
+        url = req['img'][22:]  # "data:image/png;base64," 제거
+        user_id = req['userid']
+        # print(f'userid is {user_id}')
 
         # base64 to image
         img = base64.b64decode(url)
@@ -96,9 +99,11 @@ def predict():
             return json.dumps({'message': 'cannot get landmarks'})
 
         prediction = model.predict(annotated_image)  # <class 'numpy.ndarray'>
-        label = prediction.argmax()
-
+        label = prediction.argmax() # int64
         print(prediction)
+
+        if int(label):
+            table_log(user_id, CLASSES[label], 1)
 
         return json.dumps({'message': int(label), 'pose': CLASSES[label]})
         # return json.dumps({'message': CLASSES[label]})

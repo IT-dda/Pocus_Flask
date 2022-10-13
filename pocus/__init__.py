@@ -1,5 +1,5 @@
 from flask import Flask
-from .views import database_views, main_views, upper_views, lower_views, connect_views
+from .views import database_views, main_views, upper_views, lower_views, connect_views, noti_views
 
 
 def create_app():
@@ -11,5 +11,6 @@ def create_app():
     app.register_blueprint(connect_views.bp)
     app.register_blueprint(upper_views.bp)
     app.register_blueprint(lower_views.bp)
+    app.register_blueprint(noti_views.bp)
 
     return app
