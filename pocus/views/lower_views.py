@@ -2,7 +2,7 @@ from flask import Blueprint, request
 import joblib
 import numpy as np
 import json
-from ..save_noti import table_log, table_ss
+from ..save_noti import table_log, table_ss, check_table
 
 bp = Blueprint('lower', __name__, url_prefix='/lower')
 model = joblib.load('./pocus/static/models/sensor.pkl')
@@ -24,8 +24,6 @@ def predict():
         nums = req['values']
         user_id = req['userid']
         values = list(map(int, nums.split(',')))
-        # print(f'values are {values}')
-        # print(f'userid is {user_id}')
 
         # predict
         sensor_value = np.array(values)
@@ -36,6 +34,8 @@ def predict():
         if int(prediction[0]):
             log_id = table_log(user_id, LOWER[int(prediction[0])], 0)
             table_ss(log_id, values[0], values[1], values[2], values[3])
+
+        check_table(user_id)
 
         return json.dumps({'prediction': int(prediction[0]), 'params': nums})
     else:  # GET
