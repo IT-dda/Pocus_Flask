@@ -26,9 +26,17 @@ def table_ss(p1, s1, s2, s3, s4):
 
     return pk[0]['LAST_INSERT_ID()']
 
+def check_data(s1, s2, s3, s4):
+    db = Database()
+    sql = "SELECT COUNT(*) from pocus.log left outer join pocus.ss on log.log_id = ss.log_id where ss.ss1 = %s and ss.ss2 = %s and ss.ss3 = %s and ss.ss4 = %s and log.date BETWEEN DATE_ADD(NOW(), INTERVAL -10 SECOND) AND DATE_ADD(NOW(), INTERVAL 10 SECOND)" % (s1, s2, s3, s4)
+    rows = db.executeAll(sql)
+    db.close()
+    return rows
+
 def check_table(user_id):
     db = Database()
     sql = "DELETE a from pocus.log a, pocus.log b where a.log_id > b.log_id and a.user_id = %s and b.user_id = %s and a.isUpper = 0 and b.isUpper = 0" % (user_id, user_id)
-    db.execute(sql)
+    rows = db.executeAll(sql)
     db.commit()
     db.close()
+    return rows

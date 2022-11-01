@@ -2,7 +2,7 @@ from flask import Blueprint, request
 import joblib
 import numpy as np
 import json
-from ..save_noti import table_log, table_ss, check_table
+from ..save_noti import table_log, table_ss, check_data
 
 bp = Blueprint('lower', __name__, url_prefix='/lower')
 model = joblib.load('./pocus/static/models/sensor.pkl')
@@ -31,12 +31,10 @@ def predict():
         prediction = model.predict(sensor_value) # int64
 
         # save at db
-        if int(prediction[0]):
+        duplicate = check_data(values[0], values[1], values[2], values[3])
+        if int(prediction[0]) and duplicate == 0:
             log_id = table_log(user_id, LOWER[int(prediction[0])], 0)
             table_ss(log_id, values[0], values[1], values[2], values[3])
-
-        check_table(user_id)
-
         return json.dumps({'prediction': int(prediction[0]), 'params': nums})
     else:  # GET
         return '성공!!!!!!!!!!!'
