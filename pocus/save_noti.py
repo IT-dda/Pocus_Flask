@@ -33,10 +33,16 @@ def check_data(s1, s2, s3, s4):
     db.close()
     return rows
 
-def check_table(user_id):
+def delete_duplicate(user_id):
     db = Database()
-    sql = "DELETE a from pocus.log a, pocus.log b where a.log_id > b.log_id and a.user_id = %s and b.user_id = %s and a.isUpper = 0 and b.isUpper = 0" % (user_id, user_id)
+    
+    sql = "DELETE s from pocus.ss s, pocus.log a, pocus.log b where s.log_id = a.log_id and a.log_id > b.log_id and a.user_id = %s and b.user_id = %s and a.isUpper = 0 and b.isUpper = 0 and a.date = b.date" % (user_id, user_id)
     rows = db.executeAll(sql)
     db.commit()
+
+    sql = "DELETE a from pocus.log a, pocus.log b where a.log_id > b.log_id and a.user_id = %s and b.user_id = %s and a.isUpper = 0 and b.isUpper = 0 and a.date = b.date" % (user_id, user_id)
+    rows = db.executeAll(sql)
+    db.commit()
+
     db.close()
     return rows
