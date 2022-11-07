@@ -103,7 +103,7 @@ def predict():
         print(prediction)
 
         if int(label):
-            table_log(user_id, CLASSES[label], 1)
+            table_log(user_id, '잘못된 상체 자세', 1)
 
         return json.dumps({'message': int(label), 'pose': CLASSES[label]})
         # return json.dumps({'message': CLASSES[label]})
